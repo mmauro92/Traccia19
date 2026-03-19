@@ -3,6 +3,9 @@
 -- RDBMS: PostgreSQL
 -- =========================================================
 
+CREATE SCHEMA IF NOT EXISTS nis2;
+SET search_path TO nis2, public;
+
 -- -------------------------
 -- ORGANIZATION
 -- -------------------------

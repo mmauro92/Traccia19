@@ -1,4 +1,4 @@
-INSERT INTO person (organization_id, first_name, last_name, email, phone, role_name, is_nis_contact)
+INSERT INTO nis2.person (organization_id, first_name, last_name, email, phone, role_name, is_nis_contact)
 VALUES
 (1, 'Alberto', 'Rizzi', 'alberto.rizzi@clouditalia.it', '+39-080-200001', 'SOC Manager', FALSE),
 (1, 'Francesca', 'Longo', 'francesca.longo@clouditalia.it', '+39-080-200002', 'DevOps Engineer', FALSE),
@@ -12,7 +12,7 @@ VALUES
 (1, 'Veronica', 'Sala', 'veronica.sala@clouditalia.it', '+39-080-200010', 'Service Desk Operator', FALSE);
 
 
-INSERT INTO asset (organization_id, name, description, category, criticality_level, location, status)
+INSERT INTO nis2.asset (organization_id, name, description, category, criticality_level, location, status)
 VALUES
 (1, 'Compute Node X1', 'Nodo compute aggiuntivo', 'infrastruttura', 'medio', 'DC Milano', 'attivo'),
 (1, 'Compute Node X2', 'Nodo compute ridondante', 'infrastruttura', 'medio', 'DC Milano', 'attivo'),
@@ -31,7 +31,7 @@ VALUES
 (1, 'Object Storage B', 'Storage oggetti secondario', 'infrastruttura', 'medio', 'DC Milano', 'attivo');
 
 
-INSERT INTO service (organization_id, name, description, category, criticality_level, status)
+INSERT INTO nis2.service (organization_id, name, description, category, criticality_level, status)
 VALUES
 (1, 'CloudItalia Logs', 'Servizio centralizzato di log', 'SaaS', 'medio', 'attivo'),
 (1, 'CloudItalia Archive', 'Archivio dati a lungo termine', 'SaaS', 'basso', 'attivo'),
@@ -42,7 +42,7 @@ VALUES
 (1, 'CloudItalia Mail Relay', 'Relay email gestito', 'SaaS', 'basso', 'attivo');
 
 
-INSERT INTO service_asset VALUES
+INSERT INTO nis2.service_asset VALUES
 (9, 21, 'ospitato su'),
 (9, 22, 'ospitato su'),
 (9, 26, 'utilizza DB log'),
@@ -67,7 +67,7 @@ INSERT INTO service_asset VALUES
 (15, 27, 'reverse proxy');
 
 
-INSERT INTO third_party (name, type, country, contact_email, contact_phone)
+INSERT INTO nis2.third_party (name, type, country, contact_email, contact_phone)
 VALUES
 ('DataVault Corp.', 'storage provider', 'France', 'support@datavault.fr', '+33-1-555555'),
 ('NetWave AG', 'network provider', 'Switzerland', 'noc@netwave.ch', '+41-22-777777'),
@@ -77,7 +77,7 @@ VALUES
 ('MonitorPlus Inc.', 'monitoring provider', 'USA', 'support@monitorplus.com', '+1-555-444444');
 
 
-INSERT INTO dependency (organization_id, third_party_id, service_id, dependency_type, description)
+INSERT INTO nis2.dependency (organization_id, third_party_id, service_id, dependency_type, description)
 VALUES
 (1, 7, 9, 'log storage', 'Storage esterno per log'),
 (1, 8, 10, 'network transit', 'Transito rete per archivio'),
@@ -91,7 +91,7 @@ VALUES
 (1, 12, 9, 'alerting', 'Alerting esterno');
 
 
-INSERT INTO responsibility (organization_id, person_id, service_id, responsibility_type)
+INSERT INTO nis2.responsibility (organization_id, person_id, service_id, responsibility_type)
 VALUES
 (1, 11, 9, 'log manager'),
 (1, 12, 10, 'archive owner'),
