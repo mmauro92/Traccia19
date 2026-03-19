@@ -12,11 +12,11 @@ SELECT
     p.first_name || ' ' || p.last_name AS contact_name,
     p.email AS contact_email,
     r.responsibility_type
-FROM organization o
-LEFT JOIN service s ON s.organization_id = o.organization_id AND s.is_current = TRUE
-LEFT JOIN service_asset sa ON sa.service_id = s.service_id
-LEFT JOIN asset a ON a.asset_id = sa.asset_id AND a.is_current = TRUE
-LEFT JOIN dependency d ON d.organization_id = o.organization_id AND d.is_current = TRUE
-LEFT JOIN third_party t ON t.third_party_id = d.third_party_id
-LEFT JOIN responsibility r ON r.organization_id = o.organization_id AND r.is_current = TRUE
-LEFT JOIN person p ON p.person_id = r.person_id;
+FROM nis2.organization o
+LEFT JOIN nis2.service s ON s.organization_id = o.organization_id AND s.is_current = TRUE
+LEFT JOIN nis2.service_asset sa ON sa.service_id = s.service_id
+LEFT JOIN nis2.asset a ON a.asset_id = sa.asset_id AND a.is_current = TRUE
+LEFT JOIN nis2.dependency d ON d.organization_id = o.organization_id AND d.is_current = TRUE
+LEFT JOIN nis2.third_party t ON t.third_party_id = d.third_party_id
+LEFT JOIN nis2.responsibility r ON r.organization_id = o.organization_id AND r.is_current = TRUE
+LEFT JOIN nis2.person p ON p.person_id = r.person_id;
