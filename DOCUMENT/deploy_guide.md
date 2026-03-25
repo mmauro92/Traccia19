@@ -1,9 +1,9 @@
-# 📦 NIS2 Database – Deployment Guide  
+# NIS2 Database – Deployment Guide  
 Guida ufficiale per il deploy dello schema, dei vincoli, del versioning e dei dataset di test.
 
 ---
 
-## 📁 Struttura degli script
+## Struttura degli script
 
 Gli script SQL sono organizzati come segue:
 
@@ -35,7 +35,7 @@ Ogni file ha uno scopo preciso e deve essere eseguito nell’ordine indicato.
 
 # 2. Ordine di deploy degli script
 
-## **1️⃣ 01_create_tables.sql**
+##  **01_create_tables.sql**
 Crea tutte le tabelle del modello:
 
 - `organization`  
@@ -51,7 +51,7 @@ Questo script **deve essere eseguito per primo**.
 
 ---
 
-## **2️⃣ 02_constraints_indexes.sql**
+## **02_constraints_indexes.sql**
 Contiene:
 
 - tutte le **foreign key**
@@ -62,7 +62,7 @@ Dipende dal file 01.
 
 ---
 
-## **3️⃣ 03_versioning_functions.sql**
+## **03_versioning_functions.sql**
 Crea le funzioni PL/pgSQL per il versioning:
 
 - `asset_versioning()`  
@@ -74,7 +74,7 @@ Queste funzioni devono esistere **prima** dei trigger.
 
 ---
 
-## **4️⃣ 04_versioning_triggers.sql**
+## **04_versioning_triggers.sql**
 Installa i trigger AFTER UPDATE:
 
 - `trg_asset_versioning`  
@@ -88,7 +88,7 @@ Dipende dal file 03.
 
 ---
 
-## **5️⃣ 05_insert_sample_data.sql**
+## **05_insert_sample_data.sql**
 Inserisce un **dataset minimo** per verificare:
 
 - corretto funzionamento delle FK  
@@ -99,7 +99,7 @@ Dipende dai file 01 e 02.
 
 ---
 
-## **6️⃣ 06_views.sql**
+## **06_views.sql**
 Contiene le viste richieste per un potenziale **export CSV**, con i campi minimi necessari:
 
 Esempi tipici:
@@ -113,7 +113,7 @@ Dipende dai file 01, 02 e 05.
 
 ---
 
-## **7️⃣ 07_query_example.sql**
+## **07_query_example.sql**
 Contiene esempi di query utili per estrarre, per ogni azienda:
 
 - elenco asset critici  
@@ -127,7 +127,7 @@ Dipende dai file 01, 02, 05 e 06.
 
 ---
 
-## **8️⃣ 08_dataset.sql**
+## **08_dataset.sql**
 Contiene un **dataset esteso**, utile per:
 
 - testare il versioning su larga scala  
@@ -138,7 +138,7 @@ Dipende dai file 01–06.
 
 ---
 
-## **9️⃣ 09_versioning.sql**
+## **09_versioning.sql**
 Contiene UPDATE controllati per testare il versioning:
 
 - verifica che i trigger creino nuove versioni  
@@ -223,7 +223,7 @@ Dovresti vedere:
 
 ---
 
-# ✔ Deploy completato
+# Deploy completato
 
 Il database è ora pronto per:
 

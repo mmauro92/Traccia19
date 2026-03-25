@@ -22,9 +22,9 @@ CREATE TABLE organization (
 -- ASSET
 -- -------------------------
 CREATE TABLE asset (
-    asset_id             SERIAL PRIMARY KEY,
-    organization_id      INT NOT NULL,
-    name                 VARCHAR(255) NOT NULL,
+    asset_id             SERIAL PRIMARY KEY, --chiave primaria
+    organization_id      INT NOT NULL, 
+    name                 VARCHAR(255) NOT NULL, 
     description          TEXT,
     category             VARCHAR(100), -- applicazione, infrastruttura, dato, processo
     criticality_level    VARCHAR(50),  -- alto/medio/basso
