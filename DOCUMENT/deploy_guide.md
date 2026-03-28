@@ -1,5 +1,5 @@
 # NIS2 Database – Deployment Guide  
-Guida ufficiale per il deploy dello schema, dei vincoli, del versioning e dei dataset di test.
+Guida ufficiale per il deploy dello schema, dei vincoli, del versioning e dei dataset di test
 
 ---
 
@@ -19,7 +19,7 @@ Gli script SQL sono organizzati come segue:
 09_versioning.sql
 ```
 
-Ogni file ha uno scopo preciso e deve essere eseguito nell’ordine indicato.
+Ogni file ha uno scopo preciso e deve essere eseguito nell’ordine indicato
 
 ---
 
@@ -47,7 +47,7 @@ Crea tutte le tabelle del modello:
 - `dependency`  
 - `responsibility`  
 
-Questo script **deve essere eseguito per primo**.
+Questo script **deve essere eseguito per primo**
 
 ---
 
@@ -58,7 +58,7 @@ Contiene:
 - vincoli **UNIQUE**, **NOT NULL**
 - indici per ottimizzare le query
 
-Dipende dal file 01.
+Dipende dal file 01
 
 ---
 
@@ -70,7 +70,7 @@ Crea le funzioni PL/pgSQL per il versioning:
 - `dependency_versioning()`  
 - `responsibility_versioning()`  
 
-Queste funzioni devono esistere **prima** dei trigger.
+Queste funzioni devono esistere **prima** dei trigger
 
 ---
 
@@ -82,9 +82,9 @@ Installa i trigger AFTER UPDATE:
 - `trg_dependency_versioning`  
 - `trg_responsibility_versioning`  
 
-Ogni trigger richiama la rispettiva funzione.
+Ogni trigger richiama la rispettiva funzione
 
-Dipende dal file 03.
+Dipende dal file 03
 
 ---
 
@@ -95,7 +95,7 @@ Inserisce un **dataset minimo** per verificare:
 - corretto popolamento delle tabelle  
 - funzionamento delle viste  
 
-Dipende dai file 01 e 02.
+Dipende dai file 01 e 02
 
 ---
 
@@ -109,7 +109,7 @@ Esempi tipici:
 - `vw_current_dependencies`  
 - `vw_current_responsibilities`  
 
-Dipende dai file 01, 02 e 05.
+Dipende dai file 01, 02 e 05
 
 ---
 
@@ -121,9 +121,9 @@ Contiene esempi di query utili per estrarre, per ogni azienda:
 - dipendenze da terze parti  
 - punti di contatto (responsabilità)  
 
-Serve come documentazione e test funzionale.
+Serve come documentazione e test funzionale
 
-Dipende dai file 01, 02, 05 e 06.
+Dipende dai file 01, 02, 05 e 06
 
 ---
 
@@ -134,7 +134,7 @@ Contiene un **dataset esteso**, utile per:
 - simulare un ambiente reale  
 - popolare il database con dati coerenti  
 
-Dipende dai file 01–06.
+Dipende dai file 01–06
 
 ---
 
@@ -145,7 +145,7 @@ Contiene UPDATE controllati per testare il versioning:
 - verifica che `valid_to` e `is_current` siano aggiornati correttamente  
 - verifica che lo storico sia completo  
 
-Dipende dai file 03, 04, 05 o 08.
+Dipende dai file 03, 04, 05 o 08
 
 ---
 
