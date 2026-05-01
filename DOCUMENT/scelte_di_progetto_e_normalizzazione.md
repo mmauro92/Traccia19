@@ -15,8 +15,9 @@
 
 ### 1.3 Terza Forma Normale (3NF)
 - Nessuna dipendenza transitiva
-- Le informazioni sono collocate nelle rispettive entità (es. fornitori in `third_party`, persone in `person`)
+- Ogni informazione è collocata nella propria entità logica
 - Nessuna ridondanza non necessaria
+- Misure ACN, livelli e maturity sono entità separate e normalizzate
 
 ---
 
@@ -46,6 +47,7 @@ Svantaggi:
 ### 2.3 Tabelle di relazione
 - `service_asset` per relazioni molti‑a‑molti
 - `dependency` per modellare dipendenze complesse
+- `responsability` per mappare ruoli su asset/servizi
 
 Trade‑off:
 - più join
@@ -54,6 +56,26 @@ Trade‑off:
 ### 2.4 Separazione tra entità statiche e dinamiche
 - Anche entità come `person`, `third_party`, `organization` sono versionate
 - Necessario per compliance NIS2/ACN
+
+Motivazioni:
+- richiesto da ACN
+- necessario per auditabilità
+- utile per incident response
+
+### 2.5 Modellazione ACN
+Entità introdotte:
+- security_measure
+- maturity_level
+- current_maturity
+- target_maturity
+- improvement_action
+
+Permettono di rappresentare:
+- Profilo Attuale
+- Profilo Target
+- Gap Analysis
+- Roadmap di miglioramento
+
 
 ---
 
@@ -71,3 +93,6 @@ Trade‑off:
 - Il versioning aumenta lo spazio occupato
 - Storico completo richiesto da NIS2/ACN
 
+### 3.4 Flessibilità vs. semplicità
+- Modellazione molto flessibile
+- Query più articolate e viste dedicate

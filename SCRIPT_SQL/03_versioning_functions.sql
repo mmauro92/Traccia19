@@ -152,3 +152,81 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- -------------------------
+-- CURRENT_MATURITY versioning
+-- -------------------------
+CREATE OR REPLACE FUNCTION nis2.current_maturity_versioning()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- chiude la versione precedente
+    UPDATE nis2.current_maturity
+    SET valid_to = NOW(),
+        is_current = FALSE
+    WHERE current_maturity_id = OLD.current_maturity_id
+      AND valid_to IS NULL
+      AND is_current = TRUE;
+
+    -- inserisce la nuova versione
+    INSERT INTO nis2.current_maturity (
+        organization_id, measure_id, level_id, notes,
+        valid_from, valid_to, is_current
+    )
+    VALUES (
+        OLD.organization_id,
+        COALESCE(NEW.measure_id, OLD.measure_id),
+        COALESCE(NEW.level_id, OLD.level_id),
+        COALESCE(NEW.notes, OLD.notes),
+        NOW(),
+        NULL,
+        TRUE
+    );
+
+    RETURN NULL; -- impedisce l'UPDATE originale
+END;
+$$ LANGUAGE plpgsql;
+
+-- -------------------------
+-- TARGET_MATURITY versioning
+-- -------------------------
+CREATE OR REPLACE FUNCTION nis2.target_maturity_versioning()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- chiude la versione precedente
+    UPDATE nis2.target_maturity
+    SET valid_to = NOW(),
+        is_current = FALSE
+    WHERE target_maturity_id = OLD.target_maturity_id
+      AND valid_to IS NULL
+      AND is_current = TRUE;
+
+    -- inserisce la nuova versione
+    INSERT INTO nis2.target_maturity (
+        organization_id, measure_id, target_level_id, justification,
+        deadline, valid_from, valid_to, is_current, created_at
+    )
+    VALUES (
+        OLD.organization_id,
+        COALESCE(NEW.measure_id, OLD.measure_id),
+        COALESCE(NEW.target_level_id, OLD.target_level_id),
+        COALESCE(NEW.justification, OLD.justification),
+        COALESCE(NEW.deadline, OLD.deadline),
+        NOW(),
+        NULL,
+        TRUE,
+        COALESCE(NEW.created_at, OLD.created_at)
+    );
+
+    RETURN NULL; -- impedisce l'UPDATE originale
+END;
+$$ LANGUAGE plpgsql;
+
+-- -------------------------
+-- IMPROVEMENT_ACTION versioning
+-- -------------------------
+CREATE OR REPLACE FUNCTION nis2.improvement_action_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at := NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;

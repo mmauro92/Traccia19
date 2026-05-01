@@ -5,20 +5,21 @@
 ## 1. Tabella: `organization`
 
 ### Descrizione
-Contiene le informazioni anagrafiche dell’organizzazione soggetta a NIS2.
+Anagrafica dell’organizzazione soggetta a NIS2/ACN.
+Tabella radice da cui dipendono tutte le altre.
 
 ### Struttura
 
 | Campo | Tipo | Vincoli | Descrizione |
-|-------|-------|----------|-------------|
-| `organization_id` | SERIAL | PK | Identificativo univoco dell’organizzazione |
-| `name` | VARCHAR(255) | NOT NULL | Nome dell’organizzazione |
-| `sector` | VARCHAR(255) | NOT NULL | Settore di appartenenza |
-| `nis_category` | VARCHAR(50) | NOT NULL | Categoria NIS2 (essenziale / importante) |
-| `country` | VARCHAR(100) | NOT NULL | Paese di registrazione |
-| `valid_from` | TIMESTAMP | DEFAULT now() | Inizio validità versione |
-| `valid_to` | TIMESTAMP | NULL | Fine validità versione |
-| `is_current` | BOOLEAN | DEFAULT TRUE | Indica se la versione è attiva |
+| --- | --- | --- | --- |
+| organization_id | SERIAL | PK | Identificativo univoco |
+| name | VARCHAR(255) | NOT NULL | Nome dell’organizzazione |
+| sector | VARCHAR(255) | NOT NULL | Settore |
+| nis_category | VARCHAR(50) | NOT NULL | Categoria NIS2 (essenziale/importante) |
+| country | VARCHAR(100) | NOT NULL | Paese |
+| valid_from | TIMESTAMP | DEFAULT now() | Inizio validità |
+| valid_to | TIMESTAMP | NULL | Fine validità |
+| is_current | BOOLEAN | DEFAULT TRUE | Versione attiva |
 
 ---
 
@@ -171,13 +172,111 @@ Mappa le responsabilità interne per ciascun servizio o asset.
 
 ---
 
-## 9. Versioning – Logica comune
+## 9. Tabella: `security_measure`
+
+### Descrizione
+Catalogo delle misure di sicurezza ACN (IAM, Logging, Patch, ecc.).
+
+### Struttura
+
+| Campo | Tipo | Vincoli | Descrizione |
+| --- | --- | --- | --- |
+| measure_id | SERIAL | PK | Identificativo |
+| code | VARCHAR(50) | UNIQUE | Codice breve |
+| name | VARCHAR(255) | NOT NULL | Nome misura |
+| description | TEXT | NULL | Descrizione |
+| category | VARCHAR(100) | NOT NULL | Categoria ACN |
+
+---
+
+## 10. Tabella: `maturity_level`
+
+### Descrizione
+Livelli di maturità ACN (0–5).
+
+### Struttura
+
+| Campo | Tipo | Vincoli | Descrizione |
+| --- | --- | --- | --- |
+| level_id | SERIAL | PK | Identificativo |
+| level_value | INT | NOT NULL | Valore numerico |
+| name | VARCHAR(255) | NOT NULL | Nome livello |
+| description | TEXT | NULL | Descrizione |
+
+---
+
+## 11. Tabella: `current_maturity`
+
+### Descrizione
+Profilo Attuale ACN dell’organizzazione.
+
+### Struttura
+
+| Campo | Tipo | Vincoli | Descrizione |
+| --- | --- | --- | --- |
+| current_maturity_id | SERIAL | PK | Identificativo |
+| organization_id | INT | FK → organization | Organizzazione |
+| measure_id | INT | FK → security_measure | Misura |
+| level_id | INT | FK → maturity_level | Livello attuale |
+| notes | TEXT | NULL | Note |
+| valid_from | TIMESTAMP | DEFAULT now() | Inizio validità |
+| valid_to | TIMESTAMP | NULL | Fine validità |
+| is_current | BOOLEAN | DEFAULT TRUE | Versione attiva |
+
+---
+
+## 12. Tabella: `target_maturity`
+
+### Descrizione
+Profilo Target ACN dell’organizzazione.
+
+### Struttura
+
+| Campo | Tipo | Vincoli | Descrizione |
+| --- | --- | --- | --- |
+| target_maturity_id | SERIAL | PK | Identificativo |
+| organization_id | INT | FK → organization | Organizzazione |
+| measure_id | INT | FK → security_measure | Misura |
+| target_level_id | INT | FK → maturity_level | Livello target |
+| justification | TEXT | NULL | Motivazione |
+| deadline | DATE | NULL | Scadenza |
+| valid_from | TIMESTAMP | DEFAULT now() | Inizio validità |
+| valid_to | TIMESTAMP | NULL | Fine validità |
+| is_current | BOOLEAN | DEFAULT TRUE | Versione attiva |
+
+---
+
+## 13. Tabella: `improvement_action`
+
+### Descrizione
+Azioni di miglioramento collegate al Profilo Target ACN.
+
+### Struttura
+
+| Campo | Tipo | Vincoli | Descrizione |
+| --- | --- | --- | --- |
+| action_id | SERIAL | PK | Identificativo |
+| organization_id | INT | FK → organization | Organizzazione |
+| measure_id | INT | FK → security_measure | Misura |
+| related_service_id | INT | FK → service | Servizio collegato |
+| related_asset_id | INT | FK → asset | Asset collegato |
+| related_third_party_id | INT | FK → third_party | Fornitore collegato |
+| description | TEXT | NOT NULL | Descrizione |
+| priority | VARCHAR(50) | NOT NULL | Priorità |
+| deadline | DATE | NULL | Scadenza |
+| status | VARCHAR(50) | NOT NULL | Stato |
+| created_at | TIMESTAMP | DEFAULT now() | Creazione |
+| updated_at | TIMESTAMP | DEFAULT now() | Ultimo aggiornamento |
+
+## 14. Versioning – Logica comune
 
 ### Tabelle versionate
 - `asset`
 - `service`
 - `dependency`
 - `responsibility`
+- `current_maturity`
+- `target_maturity`
 
 ### Campi coinvolti
 - `valid_from`
@@ -186,7 +285,7 @@ Mappa le responsabilità interne per ciascun servizio o asset.
 
 ### Comportamento
 Ogni UPDATE produce:
-1. Chiusura versione precedente  
-2. Inserimento nuova versione  
-3. Nessun UPDATE diretto sulla riga originale  
+1. Chiusura versione precedente (valid_to = NOW(), is_current = FALSE)  
+2. Inserimento nuova versione (is_current = TRUE)  
+3. Nessun aggiornamento diretto della riga originale
 

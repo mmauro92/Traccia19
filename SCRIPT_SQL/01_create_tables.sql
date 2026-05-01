@@ -125,3 +125,73 @@ CREATE TABLE responsibility (
         OR (service_id IS NULL AND asset_id IS NOT NULL)
     )
 );
+
+-- -------------------------
+-- CATALOGO MISURE DI SICUREZZA
+-- -------------------------
+CREATE TABLE IF NOT EXISTS security_measure (
+    measure_id       SERIAL PRIMARY KEY,
+    code             VARCHAR(50) UNIQUE NOT NULL, -- es. "IDENTITY_MGMT"
+    name             VARCHAR(255) NOT NULL,
+    description      TEXT,
+    category         VARCHAR(100)
+);
+
+-- -------------------------
+-- LIVELLI DI MATURITA'
+-- -------------------------
+CREATE TABLE IF NOT EXISTS maturity_level (
+    level_id         SERIAL PRIMARY KEY,
+    level_value      INT NOT NULL, -- 0..5
+    name             VARCHAR(100),
+    description      TEXT,
+    UNIQUE(level_value)
+);
+
+-- -------------------------
+-- CURRENT_MATURITY (Profilo Attuale - estensione)
+-- -------------------------
+CREATE TABLE IF NOT EXISTS current_maturity (
+    current_maturity_id SERIAL PRIMARY KEY,
+    organization_id     INT NOT NULL,
+    measure_id          INT NOT NULL,
+    level_id            INT NOT NULL,
+    notes               TEXT,
+    valid_from          TIMESTAMP NOT NULL DEFAULT NOW(),
+    valid_to            TIMESTAMP,
+    is_current          BOOLEAN NOT NULL DEFAULT TRUE
+);
+
+-- -------------------------
+-- TARGET_MATURITY (Profilo Target)
+-- -------------------------
+CREATE TABLE IF NOT EXISTS target_maturity (
+    target_maturity_id  SERIAL PRIMARY KEY,
+    organization_id     INT NOT NULL,
+    measure_id          INT NOT NULL,
+    target_level_id     INT NOT NULL,
+    justification        TEXT,
+    deadline            DATE,
+    valid_from          TIMESTAMP NOT NULL DEFAULT NOW(),
+    valid_to            TIMESTAMP,
+    is_current          BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at          TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+-- -------------------------
+-- IMPROVEMENT_ACTION (Roadmap / Azioni)
+-- -------------------------
+CREATE TABLE IF NOT EXISTS improvement_action (
+    action_id           SERIAL PRIMARY KEY,
+    organization_id     INT NOT NULL,
+    measure_id          INT,
+    related_service_id  INT, -- opzionale collegamento a service
+    related_asset_id    INT, -- opzionale collegamento a asset
+    related_third_party_id INT, -- opzionale collegamento a third_party
+    description         TEXT NOT NULL,
+    priority            VARCHAR(20), -- alto/medio/basso
+    deadline            DATE,
+    status              VARCHAR(50) DEFAULT 'planned', -- planned, in_progress, done
+    created_at          TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at          TIMESTAMP
+);

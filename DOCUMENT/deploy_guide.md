@@ -46,6 +46,11 @@ Crea tutte le tabelle del modello:
 - `service_asset`  
 - `dependency`  
 - `responsibility`  
+- `security_measure`  
+- `maturity_level`  
+- `current_maturity`  
+- `target_maturity`  
+- `improvement_action`  
 
 Questo script **deve essere eseguito per primo**
 
@@ -69,6 +74,9 @@ Crea le funzioni PL/pgSQL per il versioning:
 - `service_versioning()`  
 - `dependency_versioning()`  
 - `responsibility_versioning()`  
+- `current_maturity_versioning()`  
+- `target_maturity_versioning()`  
+- `improvement_action_updated_at()`  
 
 Queste funzioni devono esistere **prima** dei trigger
 
@@ -81,6 +89,9 @@ Installa i trigger AFTER UPDATE:
 - `trg_service_versioning`  
 - `trg_dependency_versioning`  
 - `trg_responsibility_versioning`  
+- `trg_current_maturity_versioning`  
+- `trg_target_maturity_versioning`  
+- `trg_improvement_action_updated_at`  
 
 Ogni trigger richiama la rispettiva funzione
 
@@ -102,12 +113,10 @@ Dipende dai file 01 e 02
 ## **06_views.sql**
 Contiene le viste richieste per un potenziale **export CSV**, con i campi minimi necessari:
 
-Esempi tipici:
-
-- `vw_current_assets`  
-- `vw_current_services`  
-- `vw_current_dependencies`  
-- `vw_current_responsibilities`  
+Esempi:
+- `acn_profile_export` : vista che produce un export completo dei dati NIS2/ACN, unificando servizi, asset, terze parti e responsabilità in un unico dataset pronto per la generazione del documento CSV richiesto da ACN.
+- `vw_gap_analysis`  vista che confronta il livello di maturità attuale e target per ogni misura ACN, calcolando automaticamente il gap e mostrando scadenze e note rilevanti.
+- `profile_target_export` vista che esporta il Profilo Target ACN completo, includendo misure, livelli target, azioni di miglioramento e relativi collegamenti a servizi, asset e terze parti.
 
 Dipende dai file 01, 02 e 05
 
